@@ -69,7 +69,7 @@ In CMake there are two types of variables: normal variables and cache variables.
 
 - CMake since 3.19 (2022) have `CMakePresets.json`
     - allows to set CMake cache values (user option ones) from various presets for various typical build environnements
-    - it is sweat to make un unattended configuration phase for all CI environement
+    - it is sweat to make an unattended configuration phase for all CI environement
     - basically github actions will call `cmake --preset XXX-ci-x64` where XXX is one of windows, linux, macos
 
 
