@@ -1,7 +1,7 @@
 # Exclude everything
 /*
 
-# Except for default project files
+# Except for project files
 !/.github
 !/build-aux
 !/cmake
@@ -14,6 +14,7 @@
 !CMakeLists.txt
 !CMakePresets.json
 !LICENSE
+!BUILDING.md
 !README.md
 
 # Exclude lock files
