@@ -1,14 +1,18 @@
 # Building shadertastic
 
-## Manual build for linux
+## Manual build for ubuntu 22.04
 
 As root:
 ```sh
-# Build tools
-apt install cmake ccache ninja-build
-# OBS build deps
-apt install #TODO
-# plugin build deps
+# Build tools (from .github/scripts/.Aptfile)
+apt install cmake ccache git jq ninja-build pkg-config
+# OBS build deps (from .github/scripts/utils.zsh/setup_linux)
+apt install gcc g++
+add-apt-repository --yes ppa:obsproject/obs-studio
+apt update
+apt install build-essential libgles2-mesa-dev obs-studio
+apt install qt6-base-dev:amd64 libqt6svg6-dev:amd64 qt6-base-private-dev:amd64
+# This plugin build deps
 apt install libzip-dev #TODO
 ```
 As user :
@@ -44,9 +48,11 @@ cmake #TODO check the .build.zsh calls
     - `.github/actions/build-plugin.action.yaml` will exec
         - zsh scripts on MacOS or Linux `.github/scripts/build-linux` (symlink to `.github/scripts/.build.zsh`)
         - or PowerShell script on windows `.github/scripts/Build-Windows.ps1`
-    - `.build.zsh` accepts a ``--debug`` argument to show issued CMake commands, and action set it if `$RUNNER_DEBUG` is set
-    - it is a "Secret or variable" of the *repository* (not environnement), see: https://github.com/<project>/<repo>/settings/variables/actions
+    - `.build.zsh` accepts a ``--debug`` argument to show issued CMake commands, and action set it if `$RUNNER\_DEBUG` is set
+    - this `$RUNNER\_DEBUG` is set by github if the checkbox "Enable debug logging" is checked on "Re-run all jobs" button/popup from a workflow summary
+    - For Github workflow evaluation debug mode (the YaML part not the zsh part), you can set in repo Settings/General/Secrets and variables/Actions, tab "Variables", section "Repository variables" `ACTIONS\_RUNNER\_DEBUG=true` (URL like: https://github.com/<project>/<repo>/settings/variables/actions)
     - see: https://docs.github.com/en/actions/monitoring-and-troubleshooting-workflows/troubleshooting-workflows/enabling-debug-logging#enabling-runner-diagnostic-logging
+    - this debug is not shown on the web interface, you have to on the action run summary (and not workflow summary), use the setting icon to click "Download log archive" or open `running-diagnostic-log` folder in the zip.
 
 - CMake has phases a bit like `./configure`, `make`, `make install`
     - but it is more configure, generate (input files for native build system)
