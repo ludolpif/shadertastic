@@ -267,6 +267,9 @@ ${_usage_host:-}"
         ;;
     }
 
+    log_output "Dump all reveleant variables before calling cmake"
+    set | grep -E '^(host_os|project_|buildspec_file|verbosity|_version|_valid_targets|target|config|_valid_configs|codesign|_valid_generators|generator|args|_skip|_check|skips|product_|cmake_|_loglevel|_preset|xcbeautify_opts)'
+
     log_debug "Attempting to configure with CMake arguments: ${cmake_args}"
 
     cmake ${cmake_args}

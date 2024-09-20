@@ -96,4 +96,5 @@ In CMake there are two types of variables: normal variables and cache variables.
     - set `CMAKE_COMPILE_WARNING_AS_ERROR` to false for windows-ci-x64
         - rationale: MSVC emits non-problematic warnings in `flexc++` generated code for upcoming `shadership` tool
         - editing the generated code seems not a good choice even if it's for `#pramga` something
+- Edited `.github/scripts/.build.zsh` for `log_output "Dump all reveleant variables before calling cmake"`
 
