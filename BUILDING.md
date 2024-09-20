@@ -52,15 +52,15 @@ cmake #TODO check the .build.zsh calls
     - this `$RUNNER_DEBUG` is set by github if the checkbox "Enable debug logging" is checked on "Re-run all jobs" button/popup from a workflow summary
     - For Github workflow evaluation debug mode (the YaML part not the zsh part), you can set in repo Settings/General/Secrets and variables/Actions, tab "Variables", section "Repository variables" `ACTIONS_RUNNER_DEBUG=true` (URL like: github.com/\<project\>/\<repo\>/settings/variables/actions)
     - see: https://docs.github.com/en/actions/monitoring-and-troubleshooting-workflows/troubleshooting-workflows/enabling-debug-logging#enabling-runner-diagnostic-logging
-    - this debug is not shown on the web interface, you have to on the action run summary (and not workflow summary), use the setting icon to click "Download log archive" or open `running-diagnostic-log` folder in the zip.
+    - this debug is not shown on the web interface, you have to on the action run summary (and not workflow summary), use the settings icon to click "Download log archive" or open `running-diagnostic-log` folder in the zip.
 
 - CMake has phases a bit like `./configure`, `make`, `make install`
     - but it is more configure, generate (input files for native build system)
     - and it gives wrappers and helpers around the build and packaging actions
 - CMake project configuration is usually done manually with cmake-gui 
-    - (it needs the path of the root of this repository local copy (created by `git clone`)
+    - (it needs the path of the root of this repository local copy created by `git clone`)
     - user configurable options are defined with a default value in various `CMakeLists.txt` or included `.cmake` files
-    - choosen configured values for a particular build are known as CMake "Cache variables" as they are persistent if you restart the same build from the same environnement again
+    - choosen configured values for a particular build are known as CMake "Cache variables" as they are persistent if you restart the same build from the same environnement again (but in CI environnement are trashed at every run)
     - CMake cache variables are not only user options, they are also the result of envrionnement detection and auto-enabling features
     - `CMakeCache.txt` is the file CMake uses to keep cache variables values. It is not commited in git repository (on purpose)
     - all variables aren't cache variables as https://cmake.org/cmake/help/v3.0/command/set.html says:
