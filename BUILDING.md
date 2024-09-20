@@ -21,11 +21,11 @@ git clone -b v<branch-or-tag> --recurse-submodules <this repo url> shadertastic
 cd shadertastic/
 project_root=.
 target=x86_64
-preset=linux-$target
+preset=linux-${target}
 config=RelWithDebInfo
 generator=Ninja
 declare -a cmake_args=(--debug-output --preset ${preset} -G ${generator} -DQT_VERSION=6 -DCMAKE_BUILD_TYPE=${config} -DCMAKE_INSTALL_PREFIX=/usr)
-declare -a cmake_build_args=(--build --verbose --preset $preset --config ${config} --parallel)
+declare -a cmake_build_args=(--build --verbose --preset ${preset} --config ${config} --parallel)
 declare -a cmake_install_args=(--install build_${target} --prefix ${project_root}/release/${config})
 cmake ${cmake_args}
 cmake ${cmake_build_args}
