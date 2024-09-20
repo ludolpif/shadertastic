@@ -45,8 +45,9 @@ cmake #TODO check the .build.zsh calls
         - zsh scripts on MacOS or Linux `.github/scripts/build-linux` (symlink to `.github/scripts/.build.zsh`)
         - or PowerShell script on windows `.github/scripts/Build-Windows.ps1`
     - `.build.zsh` accepts a ``--debug`` argument to show issued CMake commands, and action set it if `$RUNNER_DEBUG` is set
-    - it is a "Secret of variable" of the repository (in Settings menu): https://github.com/<project>/<repo>/settings/variables/actions
-    
+    - it is a "Secret or variable" of the *repository* (not environnement), see: https://github.com/<project>/<repo>/settings/variables/actions
+    - see: https://docs.github.com/en/actions/monitoring-and-troubleshooting-workflows/troubleshooting-workflows/enabling-debug-logging#enabling-runner-diagnostic-logging
+
 - CMake has phases a bit like `./configure`, `make`, `make install`
     - but it is more configure, generate (input files for native build system)
     - and it gives wrappers and helpers around the build and packaging actions
