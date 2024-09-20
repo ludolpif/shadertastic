@@ -50,7 +50,7 @@ cmake #TODO check the .build.zsh calls
         - or PowerShell script on windows `.github/scripts/Build-Windows.ps1`
     - `.build.zsh` accepts a ``--debug`` argument to show issued CMake commands, and action set it if `$RUNNER_DEBUG` is set
     - this `$RUNNER_DEBUG` is set by github if the checkbox "Enable debug logging" is checked on "Re-run all jobs" button/popup from a workflow summary
-    - For Github workflow evaluation debug mode (the YaML part not the zsh part), you can set in repo Settings/General/Secrets and variables/Actions, tab "Variables", section "Repository variables" `ACTIONS_RUNNER_DEBUG=true` (URL like: https://github.com/<project>/<repo>/settings/variables/actions)
+    - For Github workflow evaluation debug mode (the YaML part not the zsh part), you can set in repo Settings/General/Secrets and variables/Actions, tab "Variables", section "Repository variables" `ACTIONS_RUNNER_DEBUG=true` (URL like: github.com/\<project\>/\<repo\>/settings/variables/actions)
     - see: https://docs.github.com/en/actions/monitoring-and-troubleshooting-workflows/troubleshooting-workflows/enabling-debug-logging#enabling-runner-diagnostic-logging
     - this debug is not shown on the web interface, you have to on the action run summary (and not workflow summary), use the setting icon to click "Download log archive" or open `running-diagnostic-log` folder in the zip.
 
