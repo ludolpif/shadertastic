@@ -26,7 +26,7 @@ cmake #TODO check the .build.zsh calls
 ## Informations learned on the road
 
 - OBS Studio uses GitHub CI actions for MacOS, Windows and Ubuntu builds
-    - this are made with `.yml` conf and `.zsh` scripts that basically triggers `cmake` commands
+    - this is made with `.yaml` configuration and `.zsh` scripts that basically triggers `cmake` commands
     - plugins can / should use same infrastructure
     - with github CI, `obsproject/obs-plugintemplate` or variants from famous OBS plugin makers have used to 
         - do a full `git clone` of obs-studio project
@@ -34,8 +34,8 @@ cmake #TODO check the .build.zsh calls
         - build OBS before build plugin (earch time ! with or without a working ccache file restore before build)
     - OBS 30 was a first release with a big cleanup and refreshed build system (cmake side and Github CI side)
         - old git `CI/` folder and shell scripts are gone
-        - now, it's only with `.github` folder and CMake "scripts"
-    - recent plugintemplate will 
+        - now, it's only with `.github` folder and CMake "scripts" (entrypoint is `CMakeLists.txt`)
+    - recent plugin-template will 
         - download obs source from publish zip file, without git history
         - build plugin against OBS headers and sources, without building OBS itself
 
