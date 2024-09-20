@@ -19,8 +19,17 @@ As user :
 ```sh
 git clone -b v<branch-or-tag> --recurse-submodules <this repo url> shadertastic
 cd shadertastic/
-cmake --preset linux-x86_64
-cmake #TODO check the .build.zsh calls
+project_root=.
+target=x86_64
+preset=linux-$target
+config=RelWithDebInfo
+generator=Ninja
+declare -a cmake_args=(--debug-output --preset ${preset} -G ${generator} -DQT_VERSION=6 -DCMAKE_BUILD_TYPE=${config} -DCMAKE_INSTALL_PREFIX=/usr)
+declare -a cmake_build_args=(--build --verbose --preset $preset --config ${config} --parallel)
+declare -a cmake_install_args=(--install build_${target} --prefix ${project_root}/release/${config})
+cmake ${cmake_args}
+cmake ${cmake_build_args}
+cmake ${cmake_install_args}
 ```
 
 ## Informations learned on the road
@@ -80,11 +89,11 @@ In CMake there are two types of variables: normal variables and cache variables.
 - Added `if: false` on macos-build build in `.github/workflows/build-project.yaml` 
 - Added `if: true` on windows-build and linux-build to let disable them while scaffolding
 - Renamed from `src/plugin-main.c` to `src/plugin-main.cpp`, filled in the start of the file (comments)
-- Edited root `CMakeLists.txt` to define `GLOB sources_CPP` and use in `target_sources()`
+- Edited root `CMakeLists.txt` to define `GLOB sources_CPP` and use it in `target_sources()`
 - Edited `CMakePresets.json` to compare build times with and without `ENABLE_FRONTEND_API` and `ENABLE_QT`
     - on ubuntu enabling one of them (or the two) cost around 3.5 minutes in `apt install <many-deps>`
     - will try to make them optionnal for shadertastic (at the cost of missing Tools/Shadertastic QT menu+dialog)
     - set `CMAKE_COMPILE_WARNING_AS_ERROR` to false for windows-ci-x64
-        - rationale: MSVC find non-problematic warnings in `flexc++` generated code for upcoming `shadership` tool
+        - rationale: MSVC emits non-problematic warnings in `flexc++` generated code for upcoming `shadership` tool
         - editing the generated code seems not a good choice even if it's for `#pramga` something
 
