@@ -40,7 +40,7 @@ cmake #TODO check the .build.zsh calls
         - build plugin against OBS headers and sources, without building OBS itself
 
 - Github CI configuration: if you are new to that, follow this to have a basic understanding of is going on
-    - `.github/workflow/(push|pr-pull).yaml are entry points
+    - `.github/workflow/(push|pr-pull).yaml` are entry points
     - they contains a `build-project` jobs that uses `.github/workflow/build-project.yaml`
     - `build-project.yaml` defines jobs named `macos-build`, `ubuntu-build`, `windows-build`
     - they start containers on the targeted OS
@@ -48,9 +48,9 @@ cmake #TODO check the .build.zsh calls
     - `.github/actions/build-plugin.action.yaml` will exec
         - zsh scripts on MacOS or Linux `.github/scripts/build-linux` (symlink to `.github/scripts/.build.zsh`)
         - or PowerShell script on windows `.github/scripts/Build-Windows.ps1`
-    - `.build.zsh` accepts a ``--debug`` argument to show issued CMake commands, and action set it if `$RUNNER\_DEBUG` is set
-    - this `$RUNNER\_DEBUG` is set by github if the checkbox "Enable debug logging" is checked on "Re-run all jobs" button/popup from a workflow summary
-    - For Github workflow evaluation debug mode (the YaML part not the zsh part), you can set in repo Settings/General/Secrets and variables/Actions, tab "Variables", section "Repository variables" `ACTIONS\_RUNNER\_DEBUG=true` (URL like: https://github.com/<project>/<repo>/settings/variables/actions)
+    - `.build.zsh` accepts a ``--debug`` argument to show issued CMake commands, and action set it if `$RUNNER_DEBUG` is set
+    - this `$RUNNER_DEBUG` is set by github if the checkbox "Enable debug logging" is checked on "Re-run all jobs" button/popup from a workflow summary
+    - For Github workflow evaluation debug mode (the YaML part not the zsh part), you can set in repo Settings/General/Secrets and variables/Actions, tab "Variables", section "Repository variables" `ACTIONS_RUNNER_DEBUG=true` (URL like: https://github.com/<project>/<repo>/settings/variables/actions)
     - see: https://docs.github.com/en/actions/monitoring-and-troubleshooting-workflows/troubleshooting-workflows/enabling-debug-logging#enabling-runner-diagnostic-logging
     - this debug is not shown on the web interface, you have to on the action run summary (and not workflow summary), use the setting icon to click "Download log archive" or open `running-diagnostic-log` folder in the zip.
 
@@ -80,11 +80,11 @@ In CMake there are two types of variables: normal variables and cache variables.
 - Added `if: false` on macos-build build in `.github/workflows/build-project.yaml` 
 - Added `if: true` on windows-build and linux-build to let disable them while scaffolding
 - Renamed from `src/plugin-main.c` to `src/plugin-main.cpp`, filled in the start of the file (comments)
-- Edited root `CMakeLists.txt` to define `GLOB sources\_CPP` and use in `target\_sources()`
-- Edited `CMakePresets.json` to compare build times with and without `ENABLE\_FRONTEND\_API` and `ENABLE\_QT`
+- Edited root `CMakeLists.txt` to define `GLOB sources_CPP` and use in `target_sources()`
+- Edited `CMakePresets.json` to compare build times with and without `ENABLE_FRONTEND_API` and `ENABLE_QT`
     - on ubuntu enabling one of them (or the two) cost around 3.5 minutes in `apt install <many-deps>`
     - will try to make them optionnal for shadertastic (at the cost of missing Tools/Shadertastic QT menu+dialog)
-    - set `CMAKE\_COMPILE\_WARNING\_AS\_ERROR` to false for windows-ci-x64
+    - set `CMAKE_COMPILE_WARNING_AS_ERROR` to false for windows-ci-x64
         - rationale: MSVC find non-problematic warnings in `flexc++` generated code for upcoming `shadership` tool
         - editing the generated code seems not a good choice even if it's for `#pramga` something
 
