@@ -34,6 +34,8 @@ if(ENABLE_QT)
                AUTORCC ON)
 endif()
 
+add_subdirectory(devtools/shadership)
+
 file(GLOB sources_CPP
     "src/plugin-main.cpp"
 )

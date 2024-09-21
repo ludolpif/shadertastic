@@ -2,10 +2,12 @@
 /*
 
 # Except for project files
+!/BUILDING.md
 !/.github
 !/build-aux
 !/cmake
 !/data
+!/devtools
 !/src
 !.clang-format
 !.cmake-format.json
@@ -14,7 +16,6 @@
 !CMakeLists.txt
 !CMakePresets.json
 !LICENSE
-!BUILDING.md
 !README.md
 
 # Exclude lock files
