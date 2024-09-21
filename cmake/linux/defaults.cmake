@@ -31,6 +31,7 @@ set(CPACK_SOURCE_GENERATOR "TXZ")
 set(CPACK_SOURCE_IGNORE_FILES
     # cmake-format: sortable
     ".*~$"
+    \\.ccache/
     \\.git/
     \\.github/
     \\.gitignore

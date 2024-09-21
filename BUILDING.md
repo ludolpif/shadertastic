@@ -28,12 +28,18 @@ install_prefix=${project_root}/release/${config}
 declare -a cmake_args=(--debug-output --preset ${preset} -G ${generator} -DQT_VERSION=6 -DCMAKE_BUILD_TYPE=${config} -DCMAKE_INSTALL_PREFIX=/usr)
 declare -a cmake_build_args=(--build --verbose --preset ${preset} --config ${config} --parallel)
 declare -a cmake_install_args=(--install build_${target} --prefix ${install_prefix})
+# Generate input files for native build tool
 cmake "${cmake_args[@]}"
+# Build the project
 cmake "${cmake_build_args[@]}"
+# Install the project (in ${install_prefix})
 cmake "${cmake_install_args[@]}"
-
+# Review build result
 ( cd ${install_prefix} && find -ls )
 objdump -p ${install_prefix}/lib/${target}-linux-gnu/obs-plugins/shadertastic.so | grep -v 0x0000
+# Make source and .deb packages
+cmake --build build_${target} --config ${config} -t package_source --verbose
+cmake --build build_${target} --config ${config} -t package --verbose
 ```
 
 ## Informations learned on the road
@@ -94,6 +100,7 @@ In CMake there are two types of variables: normal variables and cache variables.
 - Added `if: true` on windows-build and linux-build to let disable them while scaffolding
 - Renamed from `src/plugin-main.c` to `src/plugin-main.cpp`, filled in the start of the file (comments)
 - Edited root `CMakeLists.txt` to define `GLOB sources_CPP` and use it in `target_sources()`
+    - after creating it, also added `add_subdirectory(devtools/shadership)`
 - Edited `CMakePresets.json` to compare build times with and without `ENABLE_FRONTEND_API` and `ENABLE_QT`
     - on ubuntu enabling one of them (or the two) cost around 3.5 minutes in `apt install <many-deps>`
     - will try to make them optionnal for shadertastic (at the cost of missing Tools/Shadertastic QT menu+dialog)
@@ -101,4 +108,4 @@ In CMake there are two types of variables: normal variables and cache variables.
         - rationale: MSVC emits non-problematic warnings in `flexc++` generated code for upcoming `shadership` tool
         - editing the generated code seems not a good choice even if it's for `#pramga` something
 - Edited `.github/scripts/.build.zsh` for `log_output "Dump all reveleant variables before calling cmake"`
-
+- Edited `cmake/linux/defaults.cmake` to add `.ccache` to `CPACK_SOURCE_IGNORE_FILES`
