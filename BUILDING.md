@@ -24,12 +24,16 @@ target=x86_64
 preset=linux-${target}
 config=RelWithDebInfo
 generator=Ninja
+install_prefix=${project_root}/release/${config}
 declare -a cmake_args=(--debug-output --preset ${preset} -G ${generator} -DQT_VERSION=6 -DCMAKE_BUILD_TYPE=${config} -DCMAKE_INSTALL_PREFIX=/usr)
 declare -a cmake_build_args=(--build --verbose --preset ${preset} --config ${config} --parallel)
-declare -a cmake_install_args=(--install build_${target} --prefix ${project_root}/release/${config})
-cmake ${cmake_args}
-cmake ${cmake_build_args}
-cmake ${cmake_install_args}
+declare -a cmake_install_args=(--install build_${target} --prefix ${install_prefix})
+cmake "${cmake_args[@]}"
+cmake "${cmake_build_args[@]}"
+cmake "${cmake_install_args[@]}"
+
+( cd ${install_prefix} && find -ls )
+objdump -p ${install_prefix}/lib/${target}-linux-gnu/obs-plugins/shadertastic.so | grep -v 0x0000
 ```
 
 ## Informations learned on the road
