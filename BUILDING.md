@@ -37,6 +37,9 @@ cmake "${cmake_install_args[@]}"
 # Review build result
 ( cd ${install_prefix} && find -ls )
 objdump -p ${install_prefix}/lib/${target}-linux-gnu/obs-plugins/shadertastic.so | grep -v 0x0000
+# List all available targets
+cmake --build build_${target} --config ${config} -t help
+
 # Make source and .deb packages
 cmake --build build_${target} --config ${config} -t package_source --verbose
 cmake --build build_${target} --config ${config} -t package --verbose
