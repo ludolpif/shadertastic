@@ -262,6 +262,17 @@ ${_usage_host:-}"
       XZ_OPT=-T0 tar "-${_tarflags}" ${project_root}/release/${output_name}.tar.xz (lib|share)
       popd
     }
+    log_group "Preparing userspace plugin..."
+    pushd ${project_root}/release
+    mkdir -p userspace-plugin/bin
+    cp -ar ${config}/lib/x86_64-linux-gnu/obs-plugins userspace-plugin/bin/64bit
+    cp -ar ${config}/share/obs/obs-plugins/${product_name} userspace-plugin/data
+    popd
+    log_group "Preparing userspace devtools..."
+    pushd ${project_root}/release
+    mkdir -p userspace-devtools
+    cp -ar ${config}/bin userspace-devtools/bin
+    popd
     log_group
   }
 }
