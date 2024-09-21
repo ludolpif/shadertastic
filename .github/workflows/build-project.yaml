@@ -236,7 +236,7 @@ jobs:
           path: ${{ github.workspace }}/release/${{ steps.setup.outputs.pluginName }}-${{ steps.setup.outputs.pluginVersion }}-x86_64*-dbgsym.ddeb
 
   windows-build:
-    if: false # XXX temporary switch while scaffolding the build system
+    if: true # XXX temporary switch while scaffolding the build system
     name: Build for Windows 🪟
     runs-on: windows-2022
     needs: check-event
