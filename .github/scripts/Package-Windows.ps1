@@ -92,6 +92,17 @@ function Package {
 
         Log-Group
     }
+    Log-Group "Preparing userspace plugin..."
+    Push-Location -Stack BuildTemp
+    Ensure-Location -Path "${ProjectRoot}/release"
+    Copy-Item -Path ${Configuration} -Destination userspace-plugin -Recurse
+    Pop-Location -Stack BuildTemp
+    Log-Group "Preparing userspace devtools..."
+    Push-Location -Stack BuildTemp
+    Ensure-Location -Path "${ProjectRoot}/release"
+    Copy-Item -Path ${Configuration} -Destination userspace-devtools -Recurse
+    Pop-Location -Stack BuildTemp
+    Log-Group
 }
 
 Package
