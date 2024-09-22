@@ -6,7 +6,8 @@ param(
     [string] $Configuration = 'RelWithDebInfo',
     [switch] $SkipAll,
     [switch] $SkipBuild,
-    [switch] $SkipDeps
+    [switch] $SkipDeps,
+    [switch] $SkipInstall
 )
 
 $ErrorActionPreference = 'Stop'
@@ -98,9 +99,11 @@ function Build {
         Write-Host cmake @CmakeBuildArgs
         Invoke-External cmake @CmakeBuildArgs
     }
-    Log-Group "Install ${ProductName}..."
-    Write-Host cmake @CmakeInstallArgs
-    Invoke-External cmake @CmakeInstallArgs
+    if ( ! ( ( $SkipAll ) -or ( $SkipInstall ) ) ) {
+        Log-Group "Install ${ProductName}..."
+        Write-Host cmake @CmakeInstallArgs
+        Invoke-External cmake @CmakeInstallArgs
+    }
 
     Pop-Location -Stack BuildTemp
     Log-Group

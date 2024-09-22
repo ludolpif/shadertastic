@@ -169,7 +169,7 @@ ${_usage_host:-}"
       --print-config) print_config=1; skips+=(deps); shift ;;
       --skip-*)
         local -r _skip="${${(s:-:)1}[-1]}"
-        local -r -a _check=(all build deps)
+        local -r -a _check=(all build deps install)
         (( ${_check[(Ie)${_skip}]} )) || log_warning "Invalid skip mode %B${_skip}%b supplied"
         typeset -g -a skips=(${skips} ${_skip})
         shift
@@ -288,7 +288,8 @@ ${_usage_host:-}"
     } else {
       tracerun cmake ${cmake_build_args}
     }
-
+  }
+  if (( ! (${skips[(Ie)all]} + ${skips[(Ie)install]}) )) {
     log_group "Installing ${product_name}..."
     if (( _loglevel > 1 )) cmake_install_args+=(--verbose)
     tracerun cmake ${cmake_install_args}

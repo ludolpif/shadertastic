@@ -20,6 +20,7 @@ runs:
 
         local -a build_args=(
           --skip-build
+          --skip-install
           --config ${{ inputs.config }}
         )
         if (( ${+RUNNER_DEBUG} )) build_args+=(--debug)
@@ -31,6 +32,7 @@ runs:
       if: runner.os == 'Linux'
       shell: bash
       run: |
+        : Run apt-install zsh if not already available
         which zsh || sudo apt-get install -y --no-install-recommends zsh
 
     - name: Run Ubuntu build-deps
@@ -38,10 +40,11 @@ runs:
       shell: zsh --no-rcs --errexit --pipefail {0}
       working-directory: ${{ inputs.workingDirectory }}
       run: |
-        : Run Ubuntu Build
+        : Run Ubuntu build-deps
 
         local -a build_args=(
           --skip-build
+          --skip-install
           --target linux-${{ inputs.target }}
           --config ${{ inputs.config }}
         )
@@ -61,6 +64,7 @@ runs:
 
         $BuildArgs = @{
           SkipBuild
+          SkipInstall
           Target = '${{ inputs.target }}'
           Configuration = '${{ inputs.config }}'
         }
