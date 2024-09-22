@@ -191,7 +191,6 @@ jobs:
 
           echo "pluginName=${product_name}" >> $GITHUB_OUTPUT
           echo "pluginVersion=${product_version}" >> $GITHUB_OUTPUT
-          grep -R . /etc/dpkg/dpkg.cfg.d/
 
       - uses: actions/cache@v4
         id: ccache-cache
