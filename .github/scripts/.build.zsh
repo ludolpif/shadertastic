@@ -41,6 +41,10 @@ TRAPZERR() {
   exit 2
 }
 
+tracerun() {
+    echo "$@"; "$@"
+}
+
 build() {
   if (( ! ${+SCRIPT_HOME} )) typeset -g SCRIPT_HOME=${ZSH_ARGZERO:A:h}
   local host_os=${${(s:-:)ZSH_ARGZERO:t:r}[2]}
@@ -178,16 +182,15 @@ ${_usage_host:-}"
 
   set -- ${(@)args}
   set_loglevel ${verbosity}
-  set -x
+
   if (( ! (${skips[(Ie)all]} + ${skips[(Ie)deps]}) )) {
-    check_${host_os}
-    setup_ccache
+    tracerun check_${host_os}
+    tracerun setup_ccache
   }
 
   if [[ ${host_os} == linux ]] {
-    autoload -Uz setup_linux && setup_linux
+    autoload -Uz setup_linux && tracerun setup_linux
   }
-  set +x
 
   local product_name
   local product_version
@@ -272,25 +275,25 @@ ${_usage_host:-}"
     set | grep -E '^(host_os|project_|buildspec_file|verbosity|_version|_valid_targets|target|config|_valid_configs|codesign|_valid_generators|generator|args|_skip|_check|skips|product_|cmake_|_loglevel|_preset|xcbeautify_opts)'
 
     log_debug "Attempting to configure with CMake arguments: ${cmake_args}"
-    set -x
-    cmake ${cmake_args}
+
+    tracerun cmake ${cmake_args}
 
     log_group "Building ${product_name}..."
     if [[ ${host_os} == macos ]] {
       if (( _loglevel > 1 )) {
-        cmake ${cmake_build_args}
+        tracerun cmake ${cmake_build_args}
       } else {
-        cmake ${cmake_build_args} 2>&1 | xcbeautify ${xcbeautify_opts}
+        tracerun cmake ${cmake_build_args} 2>&1 | xcbeautify ${xcbeautify_opts}
       }
     } else {
-      cmake ${cmake_build_args}
+      tracerun cmake ${cmake_build_args}
     }
   }
 
   log_group "Installing ${product_name}..."
   if (( _loglevel > 1 )) cmake_install_args+=(--verbose)
-  cmake ${cmake_install_args}
-  set +x
+  tracerun cmake ${cmake_install_args}
+
   popd
   log_group
 }
