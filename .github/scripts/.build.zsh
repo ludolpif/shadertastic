@@ -186,10 +186,10 @@ ${_usage_host:-}"
   if (( ! (${skips[(Ie)all]} + ${skips[(Ie)deps]}) )) {
     tracerun check_${host_os}
     tracerun setup_ccache
-  }
 
-  if [[ ${host_os} == linux ]] {
-    autoload -Uz setup_linux && tracerun setup_linux
+    if [[ ${host_os} == linux ]] {
+      autoload -Uz setup_linux && tracerun setup_linux
+    }
   }
 
   local product_name
