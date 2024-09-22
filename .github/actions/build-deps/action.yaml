@@ -63,8 +63,8 @@ runs:
         }
 
         $BuildArgs = @{
-          SkipBuild = 1
-          SkipInstall = 1
+          SkipBuild = $true
+          SkipInstall = $true
           Target = '${{ inputs.target }}'
           Configuration = '${{ inputs.config }}'
         }
