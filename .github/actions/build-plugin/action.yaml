@@ -45,10 +45,6 @@ runs:
       shell: bash
       run: |
         sudo apt-get install -y --no-install-recommends zsh
-        set -x
-        dpkg-query -L eatmydata
-        eatmydata env | grep LD_PRELOAD
-        env | grep LD_PRELOAD
         echo ::endgroup::
 
     - name: Run Ubuntu Build
@@ -64,6 +60,7 @@ runs:
         )
         if (( ${+RUNNER_DEBUG} )) build_args+=(--debug)
 
+        export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libeatmydata.so
         .github/scripts/build-linux ${build_args}
 
     - name: Run Windows Build
