@@ -288,11 +288,11 @@ ${_usage_host:-}"
     } else {
       tracerun cmake ${cmake_build_args}
     }
-  }
 
-  log_group "Installing ${product_name}..."
-  if (( _loglevel > 1 )) cmake_install_args+=(--verbose)
-  tracerun cmake ${cmake_install_args}
+    log_group "Installing ${product_name}..."
+    if (( _loglevel > 1 )) cmake_install_args+=(--verbose)
+    tracerun cmake ${cmake_install_args}
+  }
 
   popd
   log_group
