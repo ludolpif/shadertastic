@@ -178,7 +178,7 @@ ${_usage_host:-}"
 
   set -- ${(@)args}
   set_loglevel ${verbosity}
-
+  set -x
   if (( ! (${skips[(Ie)all]} + ${skips[(Ie)deps]}) )) {
     check_${host_os}
     setup_ccache
@@ -187,6 +187,7 @@ ${_usage_host:-}"
   if [[ ${host_os} == linux ]] {
     autoload -Uz setup_linux && setup_linux
   }
+  set +x
 
   local product_name
   local product_version
@@ -271,7 +272,7 @@ ${_usage_host:-}"
     set | grep -E '^(host_os|project_|buildspec_file|verbosity|_version|_valid_targets|target|config|_valid_configs|codesign|_valid_generators|generator|args|_skip|_check|skips|product_|cmake_|_loglevel|_preset|xcbeautify_opts)'
 
     log_debug "Attempting to configure with CMake arguments: ${cmake_args}"
-
+    set -x
     cmake ${cmake_args}
 
     log_group "Building ${product_name}..."
@@ -289,6 +290,7 @@ ${_usage_host:-}"
   log_group "Installing ${product_name}..."
   if (( _loglevel > 1 )) cmake_install_args+=(--verbose)
   cmake ${cmake_install_args}
+  set +x
   popd
   log_group
 }
