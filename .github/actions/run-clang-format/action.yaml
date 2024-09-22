@@ -14,23 +14,16 @@ runs:
   steps:
     - name: Check Runner Operating System 🏃‍♂️
       if: runner.os == 'Windows'
-      shell: bash
+      shell: pwsh
       run: |
-        : Check Runner Operating System 🏃‍♂️
-        echo "::notice::run-clang-format action requires a macOS-based or Linux-based runner."
-        exit 2
+        Write-Host "::notice::run-cmake-format action requires a macOS-based or Linux-based runner."
+        Exit 2
 
-    - name: Install Dependencies 🛍️
+    - name: Install .github/scripts deps (zsh) 🛍️
       if: runner.os == 'Linux'
       shell: bash
       run: |
-        : Install Dependencies 🛍️
-        echo ::group::Install Dependencies
-        eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-        echo "/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin" >> $GITHUB_PATH
-        echo "/home/linuxbrew/.linuxbrew/opt/clang-format@17/bin" >> $GITHUB_PATH
-        brew install --quiet zsh
-        echo ::endgroup::
+        which zsh || sudo apt-get install -y --no-install-recommends zsh
 
     - name: Run clang-format 🐉
       id: result
