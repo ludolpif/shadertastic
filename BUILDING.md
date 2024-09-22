@@ -13,7 +13,8 @@ apt update
 apt install build-essential libgles2-mesa-dev obs-studio
 apt install qt6-base-dev:amd64 libqt6svg6-dev:amd64 qt6-base-private-dev:amd64
 # This plugin build deps
-apt install libzip-dev #TODO
+apt install libzip-dev zip zipcmp zipmerge ziptool
+
 ```
 As user :
 ```sh

@@ -244,20 +244,6 @@ jobs:
           name: ${{ steps.setup.outputs.pluginName }}-${{ steps.setup.outputs.pluginVersion }}-ubuntu-22.04-x86_64-${{ needs.check-event.outputs.commitHash }}-dbgsym
           path: ${{ github.workspace }}/release/${{ steps.setup.outputs.pluginName }}-${{ steps.setup.outputs.pluginVersion }}-x86_64*-dbgsym.ddeb
 
-      - name: Upload userspace plugin 🪲
-        uses: actions/upload-artifact@v4
-        if: ${{ fromJSON(needs.check-event.outputs.package) }}
-        with:
-          name: ${{ steps.setup.outputs.pluginName }}-${{ steps.setup.outputs.pluginVersion }}-ubuntu-22.04-x86_64-${{ needs.check-event.outputs.commitHash }}-userspace-plugin
-          path: ${{ github.workspace }}/release/userspace-plugin/
-
-      - name: Upload userspace devtools 🪲
-        uses: actions/upload-artifact@v4
-        if: ${{ fromJSON(needs.check-event.outputs.package) }}
-        with:
-          name: ${{ steps.setup.outputs.pluginName }}-${{ steps.setup.outputs.pluginVersion }}-ubuntu-22.04-x86_64-${{ needs.check-event.outputs.commitHash }}-userspace-devtools
-          path: ${{ github.workspace }}/release/userspace-devtools/
-
   windows-build:
     if: true # XXX temporary switch while scaffolding the build system
     name: Build for Windows 🪟
@@ -311,10 +297,3 @@ jobs:
         with:
           name: ${{ steps.setup.outputs.pluginName }}-${{ steps.setup.outputs.pluginVersion }}-windows-x64-${{ needs.check-event.outputs.commitHash }}
           path: ${{ github.workspace }}/release/${{ steps.setup.outputs.pluginName }}-${{ steps.setup.outputs.pluginVersion }}-windows-x64*.*
-
-      - name: Upload userspace devtools 🪲
-        uses: actions/upload-artifact@v4
-        if: ${{ fromJSON(needs.check-event.outputs.package) }}
-        with:
-          name: ${{ steps.setup.outputs.pluginName }}-${{ steps.setup.outputs.pluginVersion }}-windows-x64-${{ needs.check-event.outputs.commitHash }}-userspace-devtools
-          path: ${{ github.workspace }}/release/userspace-devtools/
