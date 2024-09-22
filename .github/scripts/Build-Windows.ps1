@@ -49,6 +49,7 @@ function Build {
     $ProductVersion = $BuildSpec.version
 
     if ( ! $SkipDeps ) {
+        Write-Host Install-BuildDependencies -WingetFile "${ScriptHome}/.Wingetfile"
         Install-BuildDependencies -WingetFile "${ScriptHome}/.Wingetfile"
     }
 
@@ -90,12 +91,15 @@ function Build {
         )
 
         Log-Group "Configuring ${ProductName}..."
+        Write-Host cmake @CmakeArgs
         Invoke-External cmake @CmakeArgs
 
         Log-Group "Building ${ProductName}..."
+        Write-Host cmake @CmakeBuildArgs
         Invoke-External cmake @CmakeBuildArgs
     }
     Log-Group "Install ${ProductName}..."
+    Write-Host cmake @CmakeInstallArgs
     Invoke-External cmake @CmakeInstallArgs
 
     Pop-Location -Stack BuildTemp
