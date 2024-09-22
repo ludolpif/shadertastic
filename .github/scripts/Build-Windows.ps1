@@ -55,46 +55,46 @@ function Build {
     }
 
     Push-Location -Stack BuildTemp
+    Ensure-Location $ProjectRoot
+
+    $CmakeArgs = @()
+    $CmakeBuildArgs = @()
+    $CmakeInstallArgs = @()
+
+    if ( $VerbosePreference -eq 'Continue' ) {
+        $CmakeBuildArgs += ('--verbose')
+        $CmakeInstallArgs += ('--verbose')
+    }
+
+    if ( $DebugPreference -eq 'Continue' ) {
+        $CmakeArgs += ('--debug-output')
+    }
+
+    $Preset = "windows-$(if ( $Env:CI -ne $null ) { 'ci-' })${Target}"
+
+    $CmakeArgs += @(
+        '--preset', $Preset
+    )
+
+    $CmakeBuildArgs += @(
+        '--build'
+        '--preset', $Preset
+        '--config', $Configuration
+        '--parallel'
+        '--', '/consoleLoggerParameters:Summary', '/noLogo'
+    )
+
+    $CmakeInstallArgs += @(
+        '--install', "build_${Target}"
+        '--prefix', "${ProjectRoot}/release/${Configuration}"
+        '--config', $Configuration
+    )
+
+    Log-Group "Configuring ${ProductName}..."
+    Write-Host cmake @CmakeArgs
+    Invoke-External cmake @CmakeArgs
+
     if ( ! ( ( $SkipAll ) -or ( $SkipBuild ) ) ) {
-        Ensure-Location $ProjectRoot
-
-        $CmakeArgs = @()
-        $CmakeBuildArgs = @()
-        $CmakeInstallArgs = @()
-
-        if ( $VerbosePreference -eq 'Continue' ) {
-            $CmakeBuildArgs += ('--verbose')
-            $CmakeInstallArgs += ('--verbose')
-        }
-
-        if ( $DebugPreference -eq 'Continue' ) {
-            $CmakeArgs += ('--debug-output')
-        }
-
-        $Preset = "windows-$(if ( $Env:CI -ne $null ) { 'ci-' })${Target}"
-
-        $CmakeArgs += @(
-            '--preset', $Preset
-        )
-
-        $CmakeBuildArgs += @(
-            '--build'
-            '--preset', $Preset
-            '--config', $Configuration
-            '--parallel'
-            '--', '/consoleLoggerParameters:Summary', '/noLogo'
-        )
-
-        $CmakeInstallArgs += @(
-            '--install', "build_${Target}"
-            '--prefix', "${ProjectRoot}/release/${Configuration}"
-            '--config', $Configuration
-        )
-
-        Log-Group "Configuring ${ProductName}..."
-        Write-Host cmake @CmakeArgs
-        Invoke-External cmake @CmakeArgs
-
         Log-Group "Building ${ProductName}..."
         Write-Host cmake @CmakeBuildArgs
         Invoke-External cmake @CmakeBuildArgs

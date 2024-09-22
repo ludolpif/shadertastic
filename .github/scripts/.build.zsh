@@ -198,86 +198,86 @@ ${_usage_host:-}"
     "$(jq -r '. | {name, version} | join(" ")' ${buildspec_file})"
 
   pushd ${project_root}
+  log_group "Configuring ${product_name}..."
+
+  local -a cmake_args=()
+  local -a cmake_build_args=(--build)
+  local -a cmake_install_args=(--install)
+
+  case ${_loglevel} {
+    0) cmake_args+=(-Wno_deprecated -Wno-dev --log-level=ERROR) ;;
+    1) ;;
+    2) cmake_build_args+=(--verbose) ;;
+    *) cmake_args+=(--debug-output) ;;
+  }
+
+  local -r _preset="${target%%-*}${CI:+-ci}"
+  case ${target} {
+    macos-*)
+      if (( ${+CI} )) typeset -gx NSUnbufferedIO=YES
+
+      cmake_args+=(
+        --preset ${_preset}
+      )
+
+      if (( codesign )) {
+        autoload -Uz read_codesign_team && read_codesign_team
+
+        if [[ -z ${CODESIGN_TEAM} ]] {
+          autoload -Uz read_codesign && read_codesign
+        }
+      }
+
+      cmake_args+=(
+        -DCODESIGN_TEAM=${CODESIGN_TEAM:-}
+        -DCODESIGN_IDENTITY=${CODESIGN_IDENT:--}
+      )
+
+      cmake_build_args+=(--preset ${_preset} --parallel --config ${config} -- ONLY_ACTIVE_ARCH=NO -arch arm64 -arch x86_64)
+      cmake_install_args+=(build_macos --config ${config} --prefix "${project_root}/release/${config}")
+
+      local -a xcbeautify_opts=()
+      if (( _loglevel == 0 )) xcbeautify_opts+=(--quiet)
+      ;;
+    linux-*)
+      cmake_args+=(
+        --preset ${_preset}-${target##*-}
+        -G "${generator}"
+        -DQT_VERSION=${QT_VERSION:-6}
+        -DCMAKE_BUILD_TYPE=${config}
+        -DCMAKE_INSTALL_PREFIX=/usr
+      )
+
+      local cmake_version
+      read -r _ _ cmake_version <<< "$(cmake --version)"
+
+      if [[ ${CPUTYPE} != ${target##*-} ]] {
+        if is-at-least 3.21.0 ${cmake_version}; then
+          cmake_args+=(--toolchain "${project_root}/cmake/linux/toolchains/${target##*-}-linux-gcc.cmake")
+        else
+          cmake_args+=(-D"CMAKE_TOOLCHAIN_FILE=${project_root}/cmake/linux/toolchains/${target##*-}-linux-gcc.cmake")
+        fi
+      }
+
+      cmake_build_args+=(--preset ${_preset}-${target##*-} --config ${config})
+      if [[ ${generator} == 'Unix Makefiles' ]] {
+        cmake_build_args+=(--parallel $(( $(nproc) + 1 )))
+      } else {
+        cmake_build_args+=(--parallel)
+      }
+
+      cmake_install_args+=(build_${target##*-} --prefix ${project_root}/release/${config})
+      ;;
+  }
+
+  log_output "Dump all reveleant variables before calling cmake"
+  set | grep -E '^(host_os|project_|buildspec_file|verbosity|_version|_valid_targets|target|config|_valid_configs|codesign|_valid_generators|generator|args|_skip|_check|skips|product_|cmake_|_loglevel|_preset|xcbeautify_opts)'
+
+  log_debug "Attempting to configure with CMake arguments: ${cmake_args}"
+
+  tracerun cmake ${cmake_args}
+
   if (( ! (${skips[(Ie)all]} + ${skips[(Ie)build]}) )) {
-    log_group "Configuring ${product_name}..."
-
-    local -a cmake_args=()
-    local -a cmake_build_args=(--build)
-    local -a cmake_install_args=(--install)
-
-    case ${_loglevel} {
-      0) cmake_args+=(-Wno_deprecated -Wno-dev --log-level=ERROR) ;;
-      1) ;;
-      2) cmake_build_args+=(--verbose) ;;
-      *) cmake_args+=(--debug-output) ;;
-    }
-
-    local -r _preset="${target%%-*}${CI:+-ci}"
-    case ${target} {
-      macos-*)
-        if (( ${+CI} )) typeset -gx NSUnbufferedIO=YES
-
-        cmake_args+=(
-          --preset ${_preset}
-        )
-
-        if (( codesign )) {
-          autoload -Uz read_codesign_team && read_codesign_team
-
-          if [[ -z ${CODESIGN_TEAM} ]] {
-            autoload -Uz read_codesign && read_codesign
-          }
-        }
-
-        cmake_args+=(
-          -DCODESIGN_TEAM=${CODESIGN_TEAM:-}
-          -DCODESIGN_IDENTITY=${CODESIGN_IDENT:--}
-        )
-
-        cmake_build_args+=(--preset ${_preset} --parallel --config ${config} -- ONLY_ACTIVE_ARCH=NO -arch arm64 -arch x86_64)
-        cmake_install_args+=(build_macos --config ${config} --prefix "${project_root}/release/${config}")
-
-        local -a xcbeautify_opts=()
-        if (( _loglevel == 0 )) xcbeautify_opts+=(--quiet)
-        ;;
-      linux-*)
-        cmake_args+=(
-          --preset ${_preset}-${target##*-}
-          -G "${generator}"
-          -DQT_VERSION=${QT_VERSION:-6}
-          -DCMAKE_BUILD_TYPE=${config}
-          -DCMAKE_INSTALL_PREFIX=/usr
-        )
-
-        local cmake_version
-        read -r _ _ cmake_version <<< "$(cmake --version)"
-
-        if [[ ${CPUTYPE} != ${target##*-} ]] {
-          if is-at-least 3.21.0 ${cmake_version}; then
-            cmake_args+=(--toolchain "${project_root}/cmake/linux/toolchains/${target##*-}-linux-gcc.cmake")
-          else
-            cmake_args+=(-D"CMAKE_TOOLCHAIN_FILE=${project_root}/cmake/linux/toolchains/${target##*-}-linux-gcc.cmake")
-          fi
-        }
-
-        cmake_build_args+=(--preset ${_preset}-${target##*-} --config ${config})
-        if [[ ${generator} == 'Unix Makefiles' ]] {
-          cmake_build_args+=(--parallel $(( $(nproc) + 1 )))
-        } else {
-          cmake_build_args+=(--parallel)
-        }
-
-        cmake_install_args+=(build_${target##*-} --prefix ${project_root}/release/${config})
-        ;;
-    }
-
-    log_output "Dump all reveleant variables before calling cmake"
-    set | grep -E '^(host_os|project_|buildspec_file|verbosity|_version|_valid_targets|target|config|_valid_configs|codesign|_valid_generators|generator|args|_skip|_check|skips|product_|cmake_|_loglevel|_preset|xcbeautify_opts)'
-
-    log_debug "Attempting to configure with CMake arguments: ${cmake_args}"
-
-    tracerun cmake ${cmake_args}
-
     log_group "Building ${product_name}..."
     if [[ ${host_os} == macos ]] {
       if (( _loglevel > 1 )) {
