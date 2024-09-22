@@ -40,11 +40,14 @@ runs:
 
         .github/scripts/build-macos ${build_args}
 
-    - name: Install Dependencies 🛍️
+    - name: Install zsh 🛍️
       if: runner.os == 'Linux'
       shell: bash
       run: |
-        sudo apt-get install -y --no-install-recommends zsh eatmydata
+        sudo apt-get install -y --no-install-recommends zsh
+        env
+        echo ====================================
+        sudo env
         echo ::endgroup::
 
     - name: Run Ubuntu Build
@@ -60,7 +63,7 @@ runs:
         )
         if (( ${+RUNNER_DEBUG} )) build_args+=(--debug)
 
-        eatmydata .github/scripts/build-linux ${build_args}
+        .github/scripts/build-linux ${build_args}
 
     - name: Run Windows Build
       if: runner.os == 'Windows'
