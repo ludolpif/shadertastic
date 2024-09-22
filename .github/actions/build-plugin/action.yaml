@@ -44,11 +44,7 @@ runs:
       if: runner.os == 'Linux'
       shell: bash
       run: |
-        : Install Dependencies 🛍️
-        echo ::group::Install Dependencies
-        eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-        echo "/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin" >> $GITHUB_PATH
-        brew install --quiet zsh
+        apt install zsh eatmydata
         echo ::endgroup::
 
     - name: Run Ubuntu Build
@@ -64,7 +60,7 @@ runs:
         )
         if (( ${+RUNNER_DEBUG} )) build_args+=(--debug)
 
-        .github/scripts/build-linux ${build_args}
+        eatmydata .github/scripts/build-linux ${build_args}
 
     - name: Run Windows Build
       if: runner.os == 'Windows'
