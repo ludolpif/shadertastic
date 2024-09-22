@@ -200,6 +200,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-ccache-x86_64-
 
+      - name: Install build-deps 🧱
+        uses: ./.github/actions/build-deps
+        with:
+          target: x86_64
+          config: ${{ needs.check-event.outputs.config }}
+
       - name: Build Plugin 🧱
         uses: ./.github/actions/build-plugin
         with:

@@ -1,0 +1,69 @@
+name: 'Set up plugin build environment'
+description: 'Install plugin build depedancies for specified architecture and build config'
+inputs:
+  target:
+    description: 'Target architecture for dependencies'
+    required: true
+  config:
+    description: 'Build configuration'
+    required: false
+    default: 'RelWithDebInfo'
+runs:
+  using: composite
+  steps:
+    - name: Run macOS build-deps
+      if: runner.os == 'macOS'
+      shell: zsh --no-rcs --errexit --pipefail {0}
+      working-directory: ${{ inputs.workingDirectory }}
+      run: |
+        : Run macOS Build
+
+        local -a build_args=(
+          --skip-build
+          --config ${{ inputs.config }}
+        )
+        if (( ${+RUNNER_DEBUG} )) build_args+=(--debug)
+
+        echo .github/scripts/build-macos ${build_args}
+        .github/scripts/build-macos ${build_args}
+
+    - name: Install .github/scripts deps (zsh) 🛍️
+      if: runner.os == 'Linux'
+      shell: bash
+      run: |
+        which zsh || sudo apt-get install -y --no-install-recommends zsh
+
+    - name: Run Ubuntu build-deps
+      if: runner.os == 'Linux'
+      shell: zsh --no-rcs --errexit --pipefail {0}
+      working-directory: ${{ inputs.workingDirectory }}
+      run: |
+        : Run Ubuntu Build
+
+        local -a build_args=(
+          --skip-build
+          --target linux-${{ inputs.target }}
+          --config ${{ inputs.config }}
+        )
+        if (( ${+RUNNER_DEBUG} )) build_args+=(--debug)
+
+        echo .github/scripts/build-linux ${build_args}
+        .github/scripts/build-linux ${build_args}
+
+    - name: Run Windows build-deps
+      if: runner.os == 'Windows'
+      shell: pwsh
+      run: |
+        # Run Windows Build
+        if ( $Env:RUNNER_DEBUG -ne $null ) {
+          Set-PSDebug -Trace 1
+        }
+
+        $BuildArgs = @{
+          SkipBuild
+          Target = '${{ inputs.target }}'
+          Configuration = '${{ inputs.config }}'
+        }
+
+        Write-Host .github/scripts/Build-Windows.ps1 @BuildArgs
+        .github/scripts/Build-Windows.ps1 @BuildArgs
