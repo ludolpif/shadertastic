@@ -45,9 +45,10 @@ runs:
       shell: bash
       run: |
         sudo apt-get install -y --no-install-recommends zsh
-        env
-        echo ====================================
-        sudo env
+        set -x
+        dpkg-query -L eatmydata
+        eatmydata env | grep LD_PRELOAD
+        env | grep LD_PRELOAD
         echo ::endgroup::
 
     - name: Run Ubuntu Build
