@@ -247,6 +247,7 @@ ${_usage_host:-}"
     cmake --build build_${target##*-} --config ${config} -t package_source ${cmake_args}
     popd
 
+    local output_name="${product_name}-${product_version}-${target##*-}-linux-gnu"
     if (( package )) {
       log_group "Packaging ${product_name}..."
       pushd ${project_root}
@@ -254,7 +255,6 @@ ${_usage_host:-}"
       popd
     } else {
       log_group "Archiving ${product_name}..."
-      local output_name="${product_name}-${product_version}-${target##*-}-linux-gnu"
       local _tarflags='cJf'
       if (( _loglevel > 1 || ${+CI} )) _tarflags="v${_tarflags}"
 
@@ -267,11 +267,17 @@ ${_usage_host:-}"
     mkdir -p userspace-plugin/bin
     cp -ar ${config}/lib/x86_64-linux-gnu/obs-plugins userspace-plugin/bin/64bit
     cp -ar ${config}/share/obs/obs-plugins/${product_name} userspace-plugin/data
+    pushd userspace-plugin
+    zip -9 -r ${project_root}/release/${output_name}-userspace-plugin.zip .
+    popd
     popd
     log_group "Preparing userspace devtools..."
     pushd ${project_root}/release
     mkdir -p userspace-devtools
     cp -ar ${config}/bin userspace-devtools/bin
+    pushd userspace-devtools
+    zip -9 -r ${project_root}/release/${output_name}-userspace-devtools.zip .
+    popd
     popd
     log_group
   }

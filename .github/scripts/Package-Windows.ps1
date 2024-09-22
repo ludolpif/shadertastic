@@ -96,6 +96,7 @@ function Package {
     Push-Location -Stack BuildTemp
     Ensure-Location -Path "${ProjectRoot}/release"
     Copy-Item -Path ${Configuration}/bin -Destination userspace-devtools/bin -Recurse
+    Compress-Archive -Path userspace-devtools -DestinationPath "${OutputName}-userspace-devtools.zip"
     Pop-Location -Stack BuildTemp
     Log-Group
 }
