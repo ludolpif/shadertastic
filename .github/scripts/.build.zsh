@@ -168,7 +168,7 @@ ${_usage_host:-}"
         ;;
       --print-config) print_config=1; skips+=(deps); shift ;;
       --skip-*)
-        local -r _skip="${${(s:-:)1}[-1]}"
+        local _skip="${${(s:-:)1}[-1]}"
         local -r -a _check=(all build deps install)
         (( ${_check[(Ie)${_skip}]} )) || log_warning "Invalid skip mode %B${_skip}%b supplied"
         typeset -g -a skips=(${skips} ${_skip})
