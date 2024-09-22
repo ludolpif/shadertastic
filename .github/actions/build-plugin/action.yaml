@@ -44,7 +44,7 @@ runs:
       if: runner.os == 'Linux'
       shell: bash
       run: |
-        apt install zsh eatmydata
+        sudo apt-get install -y --no-install-recommends zsh eatmydata
         echo ::endgroup::
 
     - name: Run Ubuntu Build
